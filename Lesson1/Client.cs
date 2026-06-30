@@ -4,68 +4,53 @@ using System.Text;
 
 namespace Lesson1;
 
-public class Client
+public class Client : IDisposable
 {
-    private readonly Socket _tcpSocket;
-    private readonly IPEndPoint _iPEndPoint;
+    private readonly Socket _socket;
+    private readonly string _address;
+    private readonly int _port;
 
-    private const int sizeBuffer = 1024;
+    private const int BufferSize = 1024;
 
-    public Client(string ipAddress, int port)
+    public Client(string address, int port)
     {
-        if (IPAddress.TryParse(ipAddress, out IPAddress? validationIpAddress))
-        {
-            _iPEndPoint = new IPEndPoint(validationIpAddress, port);
-        }
-        else
-        {
-            var Ips = Dns.GetHostAddresses(ipAddress);
+        _port = port;
+        _address = address;
 
-            if (Ips.Length == 0)
-            {
-                throw new Exception();
-            }
-            else
-            {
-                _iPEndPoint = new IPEndPoint(Ips.First(), port);
-            }
-        }
-
-        _tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     }
 
-
-    public Client(IPEndPoint iPEndPoint)
+    public async Task OpenConnectionAsync()
     {
-        _iPEndPoint = iPEndPoint;
-        _tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        await _socket.ConnectAsync(_address, _port);
     }
 
-    public async Task ConnectionAsync()
+    public async Task SendAsync(string request)
     {
-        await _tcpSocket.ConnectAsync(_iPEndPoint);
+        var requestBytes = Encoding.UTF8.GetBytes(request);
+        await _socket.SendAsync(requestBytes);
+
+        _socket.Shutdown(SocketShutdown.Send);
     }
 
-    public async Task SendAsync(string message)
+    public async Task<string> ReciveAsync()
     {
-        var messageBytes = Encoding.UTF8.GetBytes(message);
-        await _tcpSocket.SendAsync(messageBytes);
-    }
-
-    public async Task<string> ReadAsync()
-    {
-        int bytes;
-        var responseBytes = new byte[sizeBuffer];
-        var stringBuilder = new StringBuilder();
-
+        int readBytes;
+        var buffer = new byte[BufferSize];
+        var requestBuilder = new StringBuilder();
         do
         {
-            bytes = await _tcpSocket.ReceiveAsync(responseBytes);
-            string responsePart = Encoding.UTF8.GetString(responseBytes, 0, bytes);
-            stringBuilder.Append(responsePart);
+            readBytes = await _socket.ReceiveAsync(buffer);
+            var request = Encoding.UTF8.GetString(buffer, 0, readBytes);
+            requestBuilder.Append(request);
         }
-        while (bytes > 0);
+        while (readBytes > 0);
 
-        return stringBuilder.ToString();
+        return requestBuilder.ToString();
+    }
+
+    public void Dispose()
+    {
+        _socket.Dispose();
     }
 }
