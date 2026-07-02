@@ -1,9 +1,20 @@
-﻿using System.Text;
+﻿using Core.Model;
+using System.Text;
+using System.Text.Json;
 
-var sb = new StringBuilder();
-for (int i = 1; i <= 1_000_000; i++)
+var product = new Product()
 {
-    sb.Append(i);
-}
+    Id = 1,
+    Name = "Test",
+    Description = "Test",
+};
 
-Console.WriteLine(sb.ToString());
+var jsonProduct = JsonSerializer.Serialize(product);
+var bytes = Encoding.UTF8.GetBytes(jsonProduct);
+
+//
+
+var textObjectFromClient = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+var productFromClient = JsonSerializer.Deserialize<Product>(textObjectFromClient);
+
+Console.ReadLine();
