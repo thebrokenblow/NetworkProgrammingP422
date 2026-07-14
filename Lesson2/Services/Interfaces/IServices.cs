@@ -4,5 +4,5 @@ namespace Lesson2.Services.Interfaces;
 
 public interface IServices
 {
-    Responce Execute(string requestBody);
+    Task<Responce> ExecuteAsync(string requestBody);
 }

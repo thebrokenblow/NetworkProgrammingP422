@@ -1,5 +1,5 @@
 ﻿using Core.ModelRequest;
-using Core.ModelResponce;
+using Lesson2.Data;
 using Lesson2.Services;
 using Lesson2.Services.Interfaces;
 using System.Net;
@@ -25,10 +25,10 @@ public class Server : IDisposable
         _serverSocket.Bind(endPoint);
         _serverSocket.Listen(backlog);
 
-        _serviceByTypeRequest.Add(TypeRequest.Read, new ReadServices());
-        _serviceByTypeRequest.Add(TypeRequest.Create, new CreateServices());
-        _serviceByTypeRequest.Add(TypeRequest.Update, new UpdateServices());
-        _serviceByTypeRequest.Add(TypeRequest.Delete, new DeleteServices());
+        _serviceByTypeRequest.Add(TypeRequest.Read,   new ReadServices  (new ApplicationContext()));
+        _serviceByTypeRequest.Add(TypeRequest.Create, new CreateServices(new ApplicationContext()));
+        _serviceByTypeRequest.Add(TypeRequest.Update, new UpdateServices(new ApplicationContext()));
+        _serviceByTypeRequest.Add(TypeRequest.Delete, new DeleteServices(new ApplicationContext()));
     }
 
     public async Task<string> ReceiveAsync()
@@ -43,7 +43,8 @@ public class Server : IDisposable
     public async Task<string> HandleRequestAsync(string request)
     {
         var requestObject = JsonSerializer.Deserialize<Request>(request);
-        var responce = _serviceByTypeRequest[requestObject.TypeRequest].Execute(requestObject.Body);
+
+        var responce = await _serviceByTypeRequest[requestObject.TypeRequest].ExecuteAsync(requestObject.Body);
 
         var responceJson = JsonSerializer.Serialize(responce);
 

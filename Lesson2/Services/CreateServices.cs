@@ -1,16 +1,19 @@
 ﻿using Core.Model;
 using Core.ModelResponce;
+using Lesson2.Data;
 using Lesson2.Services.Interfaces;
 using System.Text.Json;
 
 namespace Lesson2.Services;
 
-public class CreateServices : IServices
+public class CreateServices(ApplicationContext applicationContext) : IServices
 {
-    public Responce Execute(string requestBody)
+    public async Task<Responce> ExecuteAsync(string requestBody)
     {
         var product = JsonSerializer.Deserialize<Product>(requestBody);
-        //Записал в бд
+
+        await applicationContext.AddAsync(product);
+        await applicationContext.SaveChangesAsync();
 
         var responce = new Responce
         {

@@ -1,15 +1,30 @@
 ﻿using Core.ModelResponce;
+using Lesson2.Data;
 using Lesson2.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Lesson2.Services;
 
-public class DeleteServices : IServices
+public class DeleteServices(ApplicationContext applicationContext) : IServices
 {
-    public Responce Execute(string requestBody)
+    public async Task<Responce> ExecuteAsync(string requestBody)
     {
         var idProduct = JsonSerializer.Deserialize<int>(requestBody);
-        //Удалю из бд по Id
+
+        var product = await applicationContext.Products.FirstOrDefaultAsync(product => product.Id == idProduct);
+
+        if (product == null)
+        {
+            return new Responce
+            {
+                TypeResponse = TypeResponse.Delete,
+                Body = "Объект с данным Id не существует в системе"
+            };
+        }
+
+        applicationContext.Remove(product);
+        await applicationContext.SaveChangesAsync();
 
         var responce = new Responce
         {

@@ -1,16 +1,32 @@
 ﻿using Core.Model;
 using Core.ModelResponce;
+using Lesson2.Data;
 using Lesson2.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Lesson2.Services;
 
-public class UpdateServices : IServices
+public class UpdateServices(ApplicationContext applicationContext) : IServices
 {
-    public Responce Execute(string requestBody)
+    public async Task<Responce> ExecuteAsync(string requestBody)
     {
-        var product = JsonSerializer.Deserialize<Product>(requestBody);
-        //Обновил в бд
+        var requestProduct = JsonSerializer.Deserialize<Product>(requestBody);
+        var updatingProduct = await applicationContext.Products.FirstOrDefaultAsync(product => product.Id == requestProduct.Id);
+
+        if (updatingProduct == null)
+        {
+            return new Responce
+            {
+                TypeResponse = TypeResponse.Update,
+                Body = "Продукт с данным Id не найден"
+            };
+        }
+
+        updatingProduct.Name = requestProduct.Name;
+        updatingProduct.Description = requestProduct.Description;
+
+        await applicationContext.SaveChangesAsync();
 
         var responce = new Responce
         {

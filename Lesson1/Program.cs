@@ -39,9 +39,9 @@ while (true)
     {
         var product = new Product
         {
-            Id = 0,
-            Name = "Some Name",
-            Description = "Some Name",
+            Id = 2,
+            Name = "Some Name1",
+            Description = "Some Name1",
         };
 
         request = new Request
@@ -50,13 +50,17 @@ while (true)
             Body = JsonSerializer.Serialize(product),
         };
     }
-    else
+    else if (operationNumber == 4)
     {
         request = new Request
         {
             TypeRequest = TypeRequest.Delete,
             Body = "1",
         };
+    }
+    else
+    {
+        continue;
     }
 
     var requestJson = JsonSerializer.Serialize(request);
@@ -66,6 +70,7 @@ while (true)
     var responceText = await client.ReciveAsync();
     var responceObj = JsonSerializer.Deserialize<Responce>(responceText);
 
+    Console.WriteLine(responceObj.Body);
     if (responceObj.TypeResponse == TypeResponse.Read)
     {
         var products = JsonSerializer.Deserialize<List<Product>>(responceObj.Body);
