@@ -3,4 +3,6 @@
   <Project Path="ExampleStringBuilder/ExampleStringBuilder.csproj" Id="1eeed022-ddec-4728-8419-3ae54e59a149" />
   <Project Path="Lesson1/Lesson1.csproj" />
   <Project Path="Lesson2/Lesson2.csproj" Id="76479a0c-d4ac-423e-8589-22874ba529a8" />
+  <Project Path="UdpClient/UdpClient.csproj" Id="7e1ce8e0-73cd-4d68-8019-920b0d2178d8" />
+  <Project Path="UdpServer/UdpServer.csproj" Id="e678557c-aa16-4822-9be7-a480e92b8dfa" />
 </Solution>
