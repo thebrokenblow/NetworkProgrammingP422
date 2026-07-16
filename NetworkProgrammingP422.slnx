@@ -1,6 +1,8 @@
 <Solution>
+  <Project Path="ClietnUdp/ClietnUdp.csproj" Id="3c33045b-368e-4edb-82c2-e590d1f4ccec" />
   <Project Path="Core/Core.csproj" Id="bce80617-c1b2-4ba9-b0cb-86b30abd2f93" />
   <Project Path="ExampleStringBuilder/ExampleStringBuilder.csproj" Id="1eeed022-ddec-4728-8419-3ae54e59a149" />
   <Project Path="Lesson1/Lesson1.csproj" />
   <Project Path="Lesson2/Lesson2.csproj" Id="76479a0c-d4ac-423e-8589-22874ba529a8" />
+  <Project Path="ServerUdP/ServerUdp.csproj" Id="3e688ef3-8f67-4feb-a9d6-7821118d2b22" />
 </Solution>
