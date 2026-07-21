@@ -9,6 +9,26 @@ public class ProductsController : ControllerBase
 {
     private static List<Product> _products = [];
 
+    public ProductsController()
+    {
+        if (_products.Count == 0)
+        {
+            _products.Add(new Product
+            {
+                Id = 1,
+                Name = "Some Name 1",
+                Description = "Some Description 1",
+            });
+
+            _products.Add(new Product
+            {
+                Id = 2,
+                Name = "Some Name 2",
+                Description = "Some Description 2",
+            });
+        }
+    }
+
     [HttpGet]
     public List<Product> Get()
     {
@@ -31,10 +51,15 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public void Delete(int id)
+    public IActionResult Delete(int id)
     {
-        var product = _products.First(x => x.Id == id);
+        var product = _products.FirstOrDefault(x => x.Id == id);
 
-        _products.Remove(product);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(_products.Remove(product));
     }
 }

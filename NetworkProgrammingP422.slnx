@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="ClientHttp/ClientHttp.csproj" Id="4912f55b-d388-43a0-a098-6aea9cc51bfd" />
   <Project Path="ClietnUdp/ClietnUdp.csproj" Id="3c33045b-368e-4edb-82c2-e590d1f4ccec" />
   <Project Path="Core/Core.csproj" Id="bce80617-c1b2-4ba9-b0cb-86b30abd2f93" />
   <Project Path="ExampleStringBuilder/ExampleStringBuilder.csproj" Id="1eeed022-ddec-4728-8419-3ae54e59a149" />
